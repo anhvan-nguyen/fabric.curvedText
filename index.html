@@ -9,10 +9,10 @@
   <!-- <link rel="stylesheet" href="style.css" /> -->
   <link rel="stylesheet" href="style/all.css" />
   <link rel="stylesheet" href="style/family.css" />
-  <!-- <script src="lib/fabric.js"></script> -->
+  <script src="lib/fabric.js"></script>
   <script src="code/external/ext.js"></script>
   <script src="code/DBS.js"></script>
-  <script src="code/curved.js"></script>
+  <!-- <script src="code/curved.js"></script> -->
   <link>
 </head>
 
@@ -22,14 +22,21 @@
       <div class="d-flex flex-column mx-4" style="width:500px">
         <span class="fitem trangeinput d-flex">
           <label class="flabel" style="width: 50px;">Text:</label>
-          <input v-model="text" style="width: 100%; text-align: left" type="text" id="214" @keydown="keydown">
+          <input v-model="text" style="width: 100%; text-align: left" type="text" id="214" @input="onChange">
         </span>
         <span class="fitem trangeinput">
           <label class="flabel" style="cursor:col-resize;">Curved range:</label>
-          <input v-model="curvedRange" class="" type="text" id="214">
+          <input v-model="degrees" class="" type="text" id="214">
           <span class="rangecont">
-            <input v-model="curvedRange" class="" type="range" min="-100" max="100" step="1" style="width:97%;" @input="onCurvedRange">
+            <input v-model="degrees" class="" type="range" min="-180" max="180" step="1" style="width:97%;" @input="onCurvedRange">
           </span>
+        </span>
+        <span class="fitem ddmenu">
+          <label class="flabel" for="dd213">Type:</label>
+          <select class="bbtn" id="dd213" v-model="type">
+            <option value="circle">Circle</option>
+            <option value="arc">Arc</option>
+          </select>
         </span>
         <!-- <div class="window textwarp" style="left: 150px; top: 150px;">
           <div class="whead"><span class="wname">Warp</span><span class="cross"
@@ -79,7 +86,7 @@
         </div> -->
       </div>
       <div class="mx-auto">
-        <canvas id="canvas" width="1400" height="1000" style="border:1px dotted #000;"></canvas>
+        <canvas id="canvas" width="800" height="700" style="border:1px dotted #000;"></canvas>
       </div>
     </div>
   </div>
@@ -92,16 +99,15 @@
         vertical: 0,
         range: 0,
         radius: 200,
-        spacing: 63,
+        spacing: 0,
         fontFamily: 'FranklinGothic-Heavy',
-        fontSize: 28,
-        text: 'Hello Word!',
+        fontSize: 24,
+        text: 'nguyenanhvan',
         lineHeight: 1,
         top: 200,
         left: 10,
-        char: 0,
-        textWidth: 0,
-        selected: 'circle',
+        type: 'circle',
+        degrees: 180,
         obj: {},
         canvas: null,
         ctx: null,
@@ -112,23 +118,59 @@
         l1: {}
       },
       mounted() {
-        this.canvas = document.getElementById("canvas");
+        this.canvas = new fabric.Canvas("canvas");
         this.ctx = this.canvas.getContext("2d")
+        this.textpath2();
+        this.setObjects();
+        
         // this.ctx.font = "30px Georgia";
         // this.ctx.fillText("Hello World!", 10, 50);
         // let VW = 
-        this.Y = new curved.dD;
-        let vm = this;
-        curved.B8();
-        $.getJSON("text.json", function (text) {
-          curved.zG(undefined, undefined, undefined, text, undefined, undefined);
-        });
+        // this.Y = new curved.dD;
+        // let vm = this;
+        // curved.B8();
+        // $.getJSON("text.json", function (text) {
+        //   curved.zG(undefined, undefined, undefined, text, undefined, undefined);
+        // });
         // $.getJSON("TySh.json", function (TySh) {
         //   vm.TySh = TySh;
         //   vm.onCurved()
         // });
       },
+      watch: {
+        type() {
+          this.onCurvedText();
+        }
+      },
       methods: {
+        textpath2() {
+          var textTest = new fabric.Text(this.text, {
+            left: this.canvas.width / 4,
+            top: this.canvas.height / 4,
+            fontSize: this.fontSize,
+            fontFamily: this.fontFamily,
+            fill: 'blue',
+          });
+          this.canvas.add(textTest);
+          this.setObjects();
+          this.onCurvedText()
+        },
+        onCurvedText() {
+          let rect = this.obj.getBoundingRect();
+          let box = {
+            x: rect.left,
+            y: rect.top,
+            w: rect.width,
+            h: rect.height
+          }
+          let textPath = this.caculatePathCurve(box, this.type, this.degrees, this.fontSize);
+          var path = new fabric.Path(`${textPath}`);
+          console.log(path)
+          this.obj.set('path', path)
+          this.spacingOperation(box, this.type, this.degrees, this.fontSize);
+          this.obj.setCoords();
+          this.canvas.renderAll();
+        },
         onCurved() {
           let vm = this;
           fetch("rsrc/fonts/fs/DejaVuSans-Bold.otf").then(function (R) {
@@ -143,27 +185,123 @@
           })
         },
         onCurvedRange(event) {
-          this.onCurved();
+          this.onCurvedText()
         },
-        keydown() {
-          this.onCurved();
-        },
-
         onChange(e) {
-          this.setObjects();
-          this.setProps();
+          this.obj.set({
+            text : this.text
+          });
+          this.obj.setCoords();
           this.canvas.renderAll();
+          this.onCurvedText()
         },
 
         setObjects() {
           this.canvas.setActiveObject(this.canvas.item(0));
           this.obj = this.canvas.getActiveObject();
+          this.canvas.renderAll();
         },
 
-        setProps() {
-          this.obj.set('effect', this.selected)
-          // this.obj.setText(this.text);
-          this.obj.setCoords();
+        caculatePathCurve(box, type, degrees = 0, fontSize = 24) {
+          let d = [];
+          if (String(degrees) === '-') {
+            degrees = 0;
+          }
+
+          degrees = Number(degrees);
+          if (degrees === 0) {
+            degrees = 1;
+          }
+          let w = box.w;
+          const h = box.h;
+          let x = box.x;
+          let y = box.y;
+          let r = w;
+          switch (type) {
+            case 'circle':
+              x = x + (w / 2);
+              y = y + (h / 2);
+              w = w - fontSize;
+              r = w / 2;
+              d = [
+                'M ' + x + ', ' + y,
+                'm -' + r + ', ' + '0',
+                'a ' + r + ',' + r + ' 0 0,1 ' + w + ',0',
+                'a ' + r + ',' + r + ' 0 0,1 -' + w + ',0'
+              ];
+              break;
+            default:
+              const up = degrees < 0 ? 0 : 1;
+              r = Math.sqrt(
+                Math.pow(w / 2, 2) +
+                  Math.pow(Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+              );
+              // if  (oldType === 'circle') {
+              //   y = y + (box.h / 2) + fontSize;
+              // } else {
+                y = y + (box.h / 2) + degrees;
+              // }
+
+              d = [
+                'm ' + box.x + ', ' + y,
+                'a ' + r + ',' + r + ' 0 0,' + up + ' ' + w + ',0'
+              ];
+              break;
+          }
+          // oldType = type;
+          return d.join(' ');
+        },
+
+        toRadians(angle) {
+          return angle * (Math.PI / 180);
+        },
+
+        radiusOperation(box, type, degrees = 0, fontSize = 24) {
+          if (String(degrees) === '-') {
+            degrees = 0;
+          }
+          degrees = Number(degrees);
+          if (degrees === 0) {
+            degrees = 1;
+          }
+          let w = box.w;
+          const h = box.h;
+          let x = box.x;
+          let y = box.y;
+          let r = w;
+          switch (type) {
+            case 'circle':
+              x = x + (w / 2);
+              y = y + (h / 2);
+              w = w - fontSize;
+              r = w / 2;
+              break;
+            default:
+              const up = degrees < 0 ? 0 : 1;
+              r = Math.sqrt(
+                Math.pow(w / 2, 2) +
+                  Math.pow(Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+              );
+              break;
+          }
+          return r;
+        },
+        
+        spacingOperation(box, type, degrees = 0, fontSize = 24) {
+          let r = this.radiusOperation(box, type, degrees, fontSize);
+          this.spacing = 1;
+          var circum = Math.floor((2 * Math.PI * r));
+          if(type != 'circle') {
+            circum = circum / 2;
+            this.spacing = 0;
+          }
+          this.ctx.font = fontSize + 'px ' + this.fontFamily;
+          const char = this.text.length;
+          const textWidth = Math.ceil(this.ctx.measureText(this.text).width + (this.spacing * char));
+          var diff = Math.ceil(circum - textWidth);
+          this.spacing = Math.ceil(diff / char);
+          console.log(this.spacing)
+          this.obj.set('charSpacing', ((this.spacing * 1000) / fontSize));
         },
       }
     })
