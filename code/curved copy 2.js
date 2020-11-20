@@ -105855,6 +105855,9 @@ curved.yQ = function(FX, gL, canvas) {
     }
     // if (this.UY == null || this.$r)
     //     return;
+    // if(this.Qm == -1) {
+    //     this.Qm = this.nt = FX.value.length - 1;
+    // }
     var R = FX.selectionStart
       , V = this.TySh
       , E = bg.mu(V.VW)

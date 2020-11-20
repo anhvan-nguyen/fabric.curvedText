@@ -26459,7 +26459,6 @@ var Typr = function() {
             }
         },
         pathToContext: function(X, R) {
-            debugger
             var U = 0
               , M = X.cmds
               , p = X.crds;

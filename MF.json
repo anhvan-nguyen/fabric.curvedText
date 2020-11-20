@@ -52,7 +52,7 @@
     "BaselineShift": 0,
     "FontCaps": 0,
     "FontBaseline": 0,
-    "Underline": true,
+    "Underline": false,
     "Strikethrough": false,
     "Ligatures": true,
     "DLigatures": false,
@@ -65,9 +65,9 @@
       "Type": 1,
       "Values": [
         1,
-        0.10196078431372549,
-        0.10196078431372549,
-        0.10196078431372549
+        0.847,
+        0.063,
+        0.063
       ]
     },
     "StrokeColor": {
