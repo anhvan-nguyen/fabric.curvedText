@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link rel="stylesheet" href="style/all.css" />
+  <link rel="stylesheet" href="style/family.css" />
+  <script src="lib/fabric.js"></script>
+  <link>
+</head>
+
+<body>
+  <div id="app" class="vh-100">
+    <div class="d-flex justify-content-center align-items-center h-100">
+      <div class="d-flex flex-column mx-4" style="width:500px">
+        <span class="fitem trangeinput d-flex">
+          <label class="flabel" style="width: 50px;">Text:</label>
+          <input v-model="text" style="width: 100%; text-align: left" type="text" id="214" @input="onChange">
+        </span>
+        <span class="fitem trangeinput" v-if="curvedType != 'circle'">
+          <label class="flabel" style="cursor:col-resize;">Curved range:</label>
+          <input v-model="degrees" class="" type="text" id="214">
+          <span class="rangecont">
+            <input v-model="degrees" class="" type="range" min="-180" max="180" step="1" style="width:97%;" @input="onCurvedRange">
+          </span>
+        </span>
+        <span class="fitem ddmenu">
+          <label class="flabel" for="dd213">Curved Type:</label>
+          <select class="bbtn" id="dd213" v-model="curvedType">
+            <option value="circle">Circle</option>
+            <option value="arc">Arc</option>
+          </select>
+        </span>
+        <span class="fitem ddmenu">
+          <label class="flabel" for="dd213">Font Size:</label>
+          <select class="bbtn" id="dd213" v-model="fontSize">
+            <option value="48">48</option>
+            <option value="36">36</option>
+            <option value="32">32</option>
+            <option value="24">24</option>
+          </select>
+        </span>
+      </div>
+      <div class="mx-auto">
+        <canvas id="canvas" width="800" height="700" style="border:1px dotted #000;"></canvas>
+      </div>
+    </div>
+  </div>
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        spacing: 0,
+        fontFamily: 'Luckiest Guy',
+        fontSize: 32,
+        text: 'Dangerous Curves AheaD',
+        lineHeight: 1,
+        top: 200,
+        left: 10,
+        curvedType: 'arc',
+        degrees: 180,
+        obj: {},
+        canvas: null,
+        ctx: null,
+        group: null,
+        reverse: false,
+        Y: null,
+        TySh: null,
+        l1: {}
+      },
+      mounted() {
+        this.canvas = new fabric.Canvas("canvas");
+        this.ctx = this.canvas.getContext("2d")
+        this.textpath2();
+        this.setObjects();
+        this.onCurvedText();
+      },
+      watch: {
+        curvedType() {
+          this.resetAndrender();
+        },
+        fontSize() {
+          this.resetAndrender();
+        }
+      },
+      methods: {
+        resetAndrender() {
+          this.obj.set('path', '');
+          this.canvas.renderAll();
+          this.obj.set('fontSize', this.fontSize);
+          this.canvas.renderAll();
+          this.obj.set('charSpacing', 0);
+          this.canvas.requestRenderAll();
+          this.onCurvedText();
+        },
+
+        textpath2() {
+          var textTest = new fabric.Text(this.text, {
+            left: this.canvas.width / 4,
+            top: this.canvas.height / 4,
+            fontSize: this.fontSize,
+            fontFamily: this.fontFamily,
+            fill: 'blue',
+          });
+          this.canvas.add(textTest);
+        },
+        
+        setObjects() {
+          this.canvas.setActiveObject(this.canvas.item(0));
+          this.obj = this.canvas.getActiveObject();
+          this.obj.setCoords();
+        },
+        
+        onCurvedText() {
+          let rect = this.obj.getBoundingRect();
+          let box = {
+            x: rect.left,
+            y: rect.top,
+            w: rect.width,
+            h: rect.height
+          }
+          let textPath = this.caculatePathCurve(box, this.curvedType, this.degrees, this.fontSize);
+          var path = new fabric.Path(`${textPath}`);
+          this.obj.set('path', path);
+          const charSpacing = this.spacingOperation(box, this.curvedType, this.degrees, this.fontSize);
+          this.obj.set('charSpacing', charSpacing);
+          this.canvas.requestRenderAll();
+        },
+        
+        onCurvedRange(event) {
+          this.resetAndrender();
+        },
+        
+        onChange(e) {
+          this.obj.set({
+            text : this.text
+          });
+          this.obj.setCoords();
+          this.canvas.renderAll();
+          // this.onCurvedText()
+        },
+        
+        caculatePathCurve(box, curvedType, degrees = 0, fontSize = 24) {
+          let d = [];
+          if (String(degrees) === '-') {
+            degrees = 0;
+          }
+
+          degrees = Number(degrees);
+          if (degrees === 0) {
+            degrees = 1;
+          }
+          let w = box.w;
+          const h = box.h;
+          let x = box.x;
+          let y = box.y;
+          let r = w;
+          switch (curvedType) {
+            case 'circle':
+              x = x + (w / 2);
+              y = y + (h / 2);
+              w = w + fontSize;
+              r = w / 2;
+              d = [
+                'M ' + x + ', ' + y,
+                'm -' + r + ', ' + '0',
+                'a ' + r + ',' + r + ' 0 0,1 ' + w + ',0',
+                'a ' + r + ',' + r + ' 0 0,1 -' + w + ',0'
+              ];
+              break;
+            default:
+              const up = degrees < 0 ? 0 : 1;
+              r = Math.sqrt(
+                Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+              );
+              y = y + (box.h / 2) + degrees;
+              d = [
+                'm ' + box.x + ', ' + y,
+                'a ' + r + ',' + r + ' 0 0,' + up + ' ' + w + ',0'
+              ];
+              break;
+          }
+          return d.join(' ');
+        },
+
+        toRadians(angle) {
+          return angle * (Math.PI / 180);
+        },
+
+        radiusOperation(box, curvedType, degrees = 0, fontSize = 24) {
+          if (String(degrees) === '-') {
+            degrees = 0;
+          }
+          degrees = Number(degrees);
+          if (degrees === 0) {
+            degrees = 1;
+          }
+          let w = box.w;
+          const h = box.h;
+          let x = box.x;
+          let y = box.y;
+          let r = w;
+          switch (curvedType) {
+            case 'circle':
+              x = x + (w / 2);
+              y = y + (h / 2);
+              w = w + fontSize;
+              r = w / 2;
+              break;
+            default:
+              const up = degrees < 0 ? 0 : 1;
+              r = Math.sqrt(
+                Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+              );
+              break;
+          }
+          return r;
+        },
+        
+        spacingOperation(box, curvedType, degrees = 0, fontSize = 24) {
+          let r = this.radiusOperation(box, curvedType, degrees, fontSize);
+          this.spacing = 1;
+          var circum = Math.floor((2 * Math.PI * r));
+          if(curvedType != 'circle') {
+            circum = circum / 2;
+            this.spacing = 0;
+          }
+          this.ctx.font = fontSize + 'px ' + this.fontFamily;
+          const char = this.text.length;
+          const textWidth = Math.ceil(this.ctx.measureText(this.text).width + (this.spacing * char));
+          var diff = Math.ceil(circum - textWidth);
+          this.spacing = Math.ceil(diff / char);
+          if(curvedType === 'circle') {
+            return ((this.spacing * 1000)) / fontSize
+          } else {
+            const ratio = Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (box.w / 2);
+            if(Math.abs(degrees) > 90)
+              return ((this.spacing * 1000) - (ratio * 100)) / fontSize
+            else {
+              return (((ratio / this.spacing))  * 100) / fontSize;
+            }
+          }
+        },
+      }
+    })
+  </script>
+</body>
+
+</html>

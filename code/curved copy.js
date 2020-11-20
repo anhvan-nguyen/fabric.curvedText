@@ -70267,7 +70267,7 @@
     }
     ;
     function cd(Y, R) {
-        debugger
+        debugger;
         var V = bg.Re(Y), E, r, K = bg.ah(Y), C;
         if (Y.Curve)
             r = cd.bq(Y.Curve);
@@ -71129,6 +71129,7 @@
     }
     ;
     bg.BW = function(Y, R, V) {
+        debugger
         var E = bg.a30();
         if (V)
             bg.wR(E, 0, 0, V);
@@ -105587,30 +105588,30 @@
       this.At.value = this.Wi ? E : Y
   }
   ;
-    curved.EM = function(Y, R, V, canvas) {
+    curved.EM = function(Y, R, V) {
         debugger
       if (V == null)
           V = !1;
       var E = this.TySh;
     //   if (!bp.Ee(E, R.jp.jq))
     //       return !1;
-      this.Yr = new cd(E.VW, R.jq);
+      this.Yr = new cd(E.VW, R.jp.jq);
       // if (!V) {
       //     var r = bg.mu(E.VW);
       //     this.FX.value = r.slice(0, r.length - 1)
       // }
-      var K = bp.o00(this.Yr, E, canvas);
-    //   if (w.uM.XJ(E.P5))
-    //       E.Bk = new gE;
-    //   else {
-    //       if (bg.Re(E.VW) == 1) {
-    //           var J = bg.ah(E.VW)
-    //             , z = K.Bk.y;
-    //           E.Bk = new gE(0,z,J[2] - J[0],J[3] - J[1] - z)
-    //       } else {
-    //           E.Bk = K.Bk
-    //       }
-    //   }
+      var K = bp.o00(this.Yr, E);
+      if (w.uM.XJ(E.P5))
+          E.Bk = new gE;
+      else {
+          if (bg.Re(E.VW) == 1) {
+              var J = bg.ah(E.VW)
+                , z = K.Bk.y;
+              E.Bk = new gE(0,z,J[2] - J[0],J[3] - J[1] - z)
+          } else {
+              E.Bk = K.Bk
+          }
+      }
       // var t = this.UY.rect;
       // this.UY.rect = K.V;
       // this.UY.buffer = K.uG;
@@ -105620,8 +105621,7 @@
       // return !0
     }
     ;
-    bp.o00 = function(Y, R, canvas) {
-        debugger
+    bp.o00 = function(Y, R) {
       var V = Y.aY(), C;
       if (V.x == Infinity || V.uD())
           return {
@@ -105639,49 +105639,121 @@
               Bk: new gE
           };
       // var J = O.w("canvas", "");
-    //   var J = document.querySelector(".upper-canvas");
       var J = document.getElementById("canvas");
-    //   .upper-canvas
-    //   J.width = K.d;
-    //   J.height = K.b;
-    J.width = canvas.width;
-    J.height = canvas.height;
-    var t = canvas.getContext("2d");
-
-    //   t.translate(-K.x, -K.y);
-    //   t.translate(0, 0);
-    // canvas.setWidth(800);
-    // canvas.setHeight(800)
-    // const t = canvas.getContext('2d');
+      J.width = K.d;
+      J.height = K.b;
+      var t = J.getContext("2d");
+      t.translate(-K.x, -K.y);
       bp.a2o(r, t);
-      t.save();
-      t.restore();
-    //   if (Y.G$.length != 0) {
-    //       var c = bg.SV(R)
-    //         , M = t.getImageData(0, 0, K.d, K.b);
-    //       C = new Uint8Array(M.data.buffer);
-    //       if (c == 0)
-    //           for (var x = 0; x < C.length; x += 4)
-    //               C[x + 3] = C[x + 3] > 80 ? 255 : 0;
-    //       if (c == 3)
-    //           for (var x = 0; x < C.length; x += 4)
-    //               C[x + 3] = Math.min(255, C[x + 3] * 1.5)
-    //   } else
-    //       C = w.T(K.X() * 4);
-    //  canvas.setActiveObject(canvas.item(0));
-    //  const obj = canvas.getActiveObject();
-    //  console.log(obj)
-    // obj.setCoords();
-    // canvas.renderAll();
-    // canvas.requestRenderAll();
-    //   return {
-    //       uG: C,
-    //       V: K,
-    //       Bk: E
-    //   }
+      if (Y.G$.length != 0) {
+          var c = bg.SV(R)
+            , M = t.getImageData(0, 0, K.d, K.b);
+          C = new Uint8Array(M.data.buffer);
+          if (c == 0)
+              for (var x = 0; x < C.length; x += 4)
+                  C[x + 3] = C[x + 3] > 80 ? 255 : 0;
+          if (c == 3)
+              for (var x = 0; x < C.length; x += 4)
+                  C[x + 3] = Math.min(255, C[x + 3] * 1.5)
+      } else
+          C = w.T(K.X() * 4);
+      return {
+          uG: C,
+          V: K,
+          Bk: E
+      }
   }
   ;
 
+  curved.zG = function(Y, R, V, E, r, K) {
+      debugger
+    let t = 'TySh';
+    var h = E[t] = {}
+//     , p = f.hy(Y, R);
+//   h.g = f.kw(Y, R + 2);
+//   var dw = f.hy(Y, R + 2 + 48);
+//   h.Cp = {};
+//   var eK = cj.MQ(Y, h.Cp, R + 56)
+//     , f9 = bg._G();
+//   for (var gn in f9)
+//       if (h.Cp[gn] == null)
+//           h.Cp[gn] = f9[gn];
+//   h.P5 = {};
+//   var d$ = cj.MQ(Y, h.P5, R + 56 + eK + 6);
+//   h.Bk = f.a5E(Y, R + 56 + eK + 6 + d$);
+//   h.VW = gg.nX(h.Cp.EngineData.v);
+//   bg.amK(h.VW.EngineDict.StyleRun.RunArray);
+//   if (h.VW.ResourceDict == null)
+//       h.VW.ResourceDict = JSON.parse(JSON.stringify(h.VW.DocumentResources));
+//   delete h.Cp.EngineData;
+    // debugger
+    // while (R < V) {
+    //     var J = f.rc(Y, R, 4);
+    //     R += 4;
+    //     if (J != "8BIM" && J != "8B64") {
+    //         console.log("layer information signature error! " + J, "PSB = " + r);
+    //         alert("Error in PSD file: wrong signature.");
+    //         return V
+    //     }
+    //     var t = f.rc(Y, R, 4);
+    //     R += 4;
+    //     var C = f.BY(Y, R);
+    //     R += 4;
+    //     if (r && "LMsk Lr16 Lr32 Layr Mt16 Mt32 Mtrn Alph FMsk lnk2 lnkE FEid FXid PxSD extn cinf artd".split(" ").indexOf(t) != -1) {
+    //         C = C << 32 | f.BY(Y, R);
+    //         R += 4
+    //     }
+    //     if (r && ["pths"].indexOf(t) != -1) {
+    //         C = C << 32 | f.BY(Y, R);
+    //         R += 4
+    //     }
+    //     var c = ["lrFX", "PlLd"];
+    //     if (c.indexOf(t) != -1) {
+    //         if (C % 4 != 0)
+    //             C += 4 - C % 4;
+    //         R += C;
+    //         continue
+    //     }
+    //     switch (t) {
+    //     case "TySh":
+    //         var h = E[t] = {}
+    //           , p = f.hy(Y, R);
+    //         h.g = f.kw(Y, R + 2);
+    //         var dw = f.hy(Y, R + 2 + 48);
+    //         h.Cp = {};
+    //         var eK = cj.MQ(Y, h.Cp, R + 56)
+    //           , f9 = bg._G();
+    //         for (var gn in f9)
+    //             if (h.Cp[gn] == null)
+    //                 h.Cp[gn] = f9[gn];
+    //         h.P5 = {};
+    //         var d$ = cj.MQ(Y, h.P5, R + 56 + eK + 6);
+    //         h.Bk = f.a5E(Y, R + 56 + eK + 6 + d$);
+    //         h.VW = gg.nX(h.Cp.EngineData.v);
+    //         bg.amK(h.VW.EngineDict.StyleRun.RunArray);
+    //         if (h.VW.ResourceDict == null)
+    //             h.VW.ResourceDict = JSON.parse(JSON.stringify(h.VW.DocumentResources));
+    //         delete h.Cp.EngineData;
+    //         break;
+    //     default:
+    //         console.log("unknown layer tag: " + t + ", size: " + C);
+    //         break
+    //     }
+    //     var aZ = "Lr16 LMsk Txt2 artd extd luni pths extn tySh lfx2".split(" ");
+    //     if (aZ.indexOf(t) == -1)
+    //         if (C % 4 != 0)
+    //             console.log("size not multiple of 4!!!", t);
+    //     if (t != "luni" && t != "TySh" && t != "tySh" && t != "lfx2")
+    //         if (C % 4 != 0)
+    //             C += 4 - C % 4;
+    //     R += C
+    // }
+    // var ef = [];
+    // for (var x = 0; x < ef.length; x++)
+    //     delete E[ef[x]];
+    // return R
+}
+;
 
 curved.MF = null;
 curved.tQ = function(r, MF) {
@@ -105704,7 +105776,7 @@ curved.tQ = function(r, MF) {
     // };
     // c.splice(a, 0, C);
     // Y.C = [a];
-    this.Qm = this.nt = 0;
+    // this.Qm = this.nt = 0;
     // Y.Bd(c);
     // this.Rb.u4 = c.slice(0);
     // this.Rb.o6 = Y.C.slice(0);
@@ -105720,10 +105792,10 @@ curved.tQ = function(r, MF) {
     var A = this.TySh
       , p = A.VW;
     bg.AE(A, hY);
-    // if (r.tc)
-        // bg.Iq(p, 1);
-    // else {
-        // bg.Iq(p, 0);
+    if (r.tc)
+        bg.Iq(p, 1);
+    else {
+        bg.Iq(p, 0);
         // var v = J[t.pop()]
         //   , W = v ? v.add.vmsk : null;
         // if (W) {
@@ -105765,7 +105837,7 @@ curved.tQ = function(r, MF) {
         //             this.Rw(A)
         //     }
         // }
-    // }
+    }
     // return C
 }
 ;
@@ -105799,55 +105871,9 @@ curved.QC = function() {
     return Y
 }
 ;
-curved.onChangeTySh = function(obj) {
-    debugger
-    if(!obj)
-        return;
-    if(obj.warpStyle)
-        this.TySh.P5.warpStyle.v.warpStyle = obj.warpStyle;
-    if(obj.warpValue)
-        this.TySh.P5.warpValue.v = obj.warpValue;
-    this.TySh.VW.EngineDict.Rendered.Shapes = {
-        WritingDirection: 0,
-        Children: [
-          {
-            ShapeType: 0,
-            Procession: 0,
-            Lines: {
-              WritingDirection: 0,
-              Children: []
-            },
-            Cookie: {
-              Photoshop: {
-                ShapeType: 0,
-                PointBase: [
-                  0,
-                  0
-                ],
-                Base: {
-                  ShapeType: 0,
-                  TransformPoint0: [
-                    1,
-                    0
-                  ],
-                  TransformPoint1: [
-                    0,
-                    1
-                  ],
-                  TransformPoint2: [
-                    0,
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        ]
-    }
-};
 curved.Qm = -1;
 curved.nt = -1;
-curved.yQ = function(FX, gL, canvas) {
+curved.yQ = function(FX, Y) {
     debugger
     if(this.TySh == null)
     {
@@ -105855,9 +105881,6 @@ curved.yQ = function(FX, gL, canvas) {
     }
     // if (this.UY == null || this.$r)
     //     return;
-    // if(this.Qm == -1) {
-    //     this.Qm = this.nt = FX.value.length - 1;
-    // }
     var R = FX.selectionStart
       , V = this.TySh
       , E = bg.mu(V.VW)
@@ -105898,7 +105921,6 @@ curved.yQ = function(FX, gL, canvas) {
     // }
     bg.wR(V.VW, this.Qm, this.Qm + c.length - 1, M);
     this.Qm = this.nt = t.length + c.length;
-    this.EM(undefined, gL, !0, canvas)
     // var n = this.P3
     //   , $ = this.EM(n, this.gL, !0);
     // if ($)

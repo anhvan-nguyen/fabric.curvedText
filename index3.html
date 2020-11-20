@@ -12,7 +12,7 @@
   <script src="lib/fabric.js"></script>
   <script src="code/external/ext.js"></script>
   <script src="code/DBS.js"></script>
-  <!-- <script src="code/curved.js"></script> -->
+  <script src="code/curved.js"></script>
   <link>
 </head>
 
@@ -24,7 +24,7 @@
           <label class="flabel" style="width: 50px;">Text:</label>
           <input v-model="text" style="width: 100%; text-align: left" type="text" id="214" @input="onChange">
         </span>
-        <span class="fitem trangeinput">
+        <span class="fitem trangeinput" v-if="curvedType != 'circle'">
           <label class="flabel" style="cursor:col-resize;">Curved range:</label>
           <input v-model="degrees" class="" type="text" id="214">
           <span class="rangecont">
@@ -32,10 +32,20 @@
           </span>
         </span>
         <span class="fitem ddmenu">
-          <label class="flabel" for="dd213">Type:</label>
-          <select class="bbtn" id="dd213" v-model="type">
+          <label class="flabel" for="dd213">Curved Type:</label>
+          <select class="bbtn" id="dd213" v-model="curvedType">
             <option value="circle">Circle</option>
             <option value="arc">Arc</option>
+          </select>
+        </span>
+        <span class="fitem ddmenu">
+          <label class="flabel" for="dd213">Font Size:</label>
+          <select class="bbtn" id="dd213" v-model="fontSize">
+            <option value="48">48</option>
+            <option value="36">36</option>
+            <option value="32">32</option>
+            <option value="24">24</option>
+            <!-- <option value="12">12</option> -->
           </select>
         </span>
         <!-- <div class="window textwarp" style="left: 150px; top: 150px;">
@@ -100,14 +110,14 @@
         range: 0,
         radius: 200,
         spacing: 0,
-        fontFamily: 'FranklinGothic-Heavy',
-        fontSize: 24,
-        text: 'nguyenanhvan',
+        fontFamily: 'Luckiest Guy',
+        fontSize: 32,
+        text: 'Dangerous Curves AheaD',
         lineHeight: 1,
         top: 200,
         left: 10,
-        type: 'circle',
-        degrees: 180,
+        curvedType: 'arc',
+        degrees: 100,
         obj: {},
         canvas: null,
         ctx: null,
@@ -118,31 +128,59 @@
         l1: {}
       },
       mounted() {
-        this.canvas = new fabric.Canvas("canvas");
-        this.ctx = this.canvas.getContext("2d")
-        this.textpath2();
-        this.setObjects();
+        // this.canvas = new fabric.Canvas("canvas");
+        // this.ctx = this.canvas.getContext("2d")
+        // this.textpath2();
+        // this.setObjects();
+        // this.onCurvedText();
         
         // this.ctx.font = "30px Georgia";
         // this.ctx.fillText("Hello World!", 10, 50);
         // let VW = 
-        // this.Y = new curved.dD;
-        // let vm = this;
-        // curved.B8();
+        this.Y = new curved.dD;
+        let vm = this;
+        curved.B8();
         // $.getJSON("text.json", function (text) {
         //   curved.zG(undefined, undefined, undefined, text, undefined, undefined);
         // });
-        // $.getJSON("TySh.json", function (TySh) {
-        //   vm.TySh = TySh;
-        //   vm.onCurved()
-        // });
+        $.getJSON("TySh.json", function (TySh) {
+          vm.TySh = TySh;
+          vm.onCurvedPhotopea()
+        });
       },
       watch: {
-        type() {
-          this.onCurvedText();
+        curvedType() {
+          this.resetAndrender();
+        },
+        fontSize() {
+          this.resetAndrender();
         }
       },
       methods: {
+        onCurvedPhotopea() {
+          let vm = this;
+          fetch("rsrc/fonts/fs/DejaVuSans-Bold.otf").then(function (R) {
+            return R.arrayBuffer()
+          }).then(function (R) {
+            vm.Y.jp.jq.l1['DejaVuSans-Bold'] = Typr.parse(R)[0]
+            // vm.TySh.Cp.Txt.v = vm.text;
+            vm.TySh.P5.warpValue.v = vm.degrees;
+            // vm.TySh.VW.EngineDict.Editor.Text = vm.text;
+            // vm.TySh.VW.EngineDict.ParagraphRun.RunLengthArray[0] = vm.text.length;
+            curved.EM(undefined, vm.Y, undefined, vm.TySh);
+          })
+        },
+
+        resetAndrender() {
+          this.obj.set('path', '');
+          this.canvas.renderAll();
+          this.obj.set('fontSize', this.fontSize);
+          this.canvas.renderAll();
+          this.obj.set('charSpacing', 0);
+          this.canvas.requestRenderAll();
+          this.onCurvedText();
+        },
+
         textpath2() {
           var textTest = new fabric.Text(this.text, {
             left: this.canvas.width / 4,
@@ -152,9 +190,14 @@
             fill: 'blue',
           });
           this.canvas.add(textTest);
-          this.setObjects();
-          this.onCurvedText()
         },
+        
+        setObjects() {
+          this.canvas.setActiveObject(this.canvas.item(0));
+          this.obj = this.canvas.getActiveObject();
+          this.obj.setCoords();
+        },
+        
         onCurvedText() {
           let rect = this.obj.getBoundingRect();
           let box = {
@@ -163,46 +206,28 @@
             w: rect.width,
             h: rect.height
           }
-          let textPath = this.caculatePathCurve(box, this.type, this.degrees, this.fontSize);
+          let textPath = this.caculatePathCurve(box, this.curvedType, this.degrees, this.fontSize);
           var path = new fabric.Path(`${textPath}`);
-          console.log(path)
-          this.obj.set('path', path)
-          this.spacingOperation(box, this.type, this.degrees, this.fontSize);
-          this.obj.setCoords();
-          this.canvas.renderAll();
+          this.obj.set('path', path);
+          const charSpacing = this.spacingOperation(box, this.curvedType, this.degrees, this.fontSize);
+          this.obj.set('charSpacing', charSpacing);
+          this.canvas.requestRenderAll();
         },
-        onCurved() {
-          let vm = this;
-          fetch("rsrc/fonts/fs/DejaVuSans-Bold.otf").then(function (R) {
-            return R.arrayBuffer()
-          }).then(function (R) {
-            vm.Y.jp.jq.l1['DejaVuSans-Bold'] = Typr.parse(R)[0]
-            vm.TySh.Cp.Txt.v = vm.text;
-            vm.TySh.P5.warpValue.v = vm.curvedRange;
-            vm.TySh.VW.EngineDict.Editor.Text = vm.text;
-            vm.TySh.VW.EngineDict.ParagraphRun.RunLengthArray[0] = vm.text.length;
-            curved.EM(undefined, vm.Y, undefined, vm.TySh);
-          })
-        },
+        
         onCurvedRange(event) {
-          this.onCurvedText()
+          this.resetAndrender();
         },
+        
         onChange(e) {
           this.obj.set({
             text : this.text
           });
           this.obj.setCoords();
           this.canvas.renderAll();
-          this.onCurvedText()
+          // this.onCurvedText()
         },
-
-        setObjects() {
-          this.canvas.setActiveObject(this.canvas.item(0));
-          this.obj = this.canvas.getActiveObject();
-          this.canvas.renderAll();
-        },
-
-        caculatePathCurve(box, type, degrees = 0, fontSize = 24) {
+        
+        caculatePathCurve(box, curvedType, degrees = 0, fontSize = 24) {
           let d = [];
           if (String(degrees) === '-') {
             degrees = 0;
@@ -217,11 +242,11 @@
           let x = box.x;
           let y = box.y;
           let r = w;
-          switch (type) {
+          switch (curvedType) {
             case 'circle':
               x = x + (w / 2);
               y = y + (h / 2);
-              w = w - fontSize;
+              w = w + fontSize;
               r = w / 2;
               d = [
                 'M ' + x + ', ' + y,
@@ -233,22 +258,15 @@
             default:
               const up = degrees < 0 ? 0 : 1;
               r = Math.sqrt(
-                Math.pow(w / 2, 2) +
-                  Math.pow(Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+                Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
               );
-              // if  (oldType === 'circle') {
-              //   y = y + (box.h / 2) + fontSize;
-              // } else {
-                y = y + (box.h / 2) + degrees;
-              // }
-
+              y = y + (box.h / 2) + degrees;
               d = [
                 'm ' + box.x + ', ' + y,
                 'a ' + r + ',' + r + ' 0 0,' + up + ' ' + w + ',0'
               ];
               break;
           }
-          // oldType = type;
           return d.join(' ');
         },
 
@@ -256,7 +274,7 @@
           return angle * (Math.PI / 180);
         },
 
-        radiusOperation(box, type, degrees = 0, fontSize = 24) {
+        radiusOperation(box, curvedType, degrees = 0, fontSize = 24) {
           if (String(degrees) === '-') {
             degrees = 0;
           }
@@ -269,29 +287,28 @@
           let x = box.x;
           let y = box.y;
           let r = w;
-          switch (type) {
+          switch (curvedType) {
             case 'circle':
               x = x + (w / 2);
               y = y + (h / 2);
-              w = w - fontSize;
+              w = w + fontSize;
               r = w / 2;
               break;
             default:
               const up = degrees < 0 ? 0 : 1;
               r = Math.sqrt(
-                Math.pow(w / 2, 2) +
-                  Math.pow(Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (w / 2), 2)
+                Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
               );
               break;
           }
           return r;
         },
         
-        spacingOperation(box, type, degrees = 0, fontSize = 24) {
-          let r = this.radiusOperation(box, type, degrees, fontSize);
+        spacingOperation(box, curvedType, degrees = 0, fontSize = 24) {
+          let r = this.radiusOperation(box, curvedType, degrees, fontSize);
           this.spacing = 1;
           var circum = Math.floor((2 * Math.PI * r));
-          if(type != 'circle') {
+          if(curvedType != 'circle') {
             circum = circum / 2;
             this.spacing = 0;
           }
@@ -300,8 +317,16 @@
           const textWidth = Math.ceil(this.ctx.measureText(this.text).width + (this.spacing * char));
           var diff = Math.ceil(circum - textWidth);
           this.spacing = Math.ceil(diff / char);
-          console.log(this.spacing)
-          this.obj.set('charSpacing', ((this.spacing * 1000) / fontSize));
+          if(curvedType === 'circle') {
+            return ((this.spacing * 1000)) / fontSize
+          } else {
+            const ratio = Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (box.w / 2);
+            if(Math.abs(degrees) > 90)
+              return ((this.spacing * 1000) - (ratio * 100)) / fontSize
+            else {
+              return (((ratio / this.spacing))  * 100) / fontSize;
+            }
+          }
         },
       }
     })
