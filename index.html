@@ -55,9 +55,9 @@
       el: '#app',
       data: {
         spacing: 0,
-        fontFamily: 'Luckiest Guy',
-        fontSize: 32,
-        text: 'nguyen anh van',
+        fontFamily: 'arial',
+        fontSize: 48,
+        text: 'na ngu',
         lineHeight: 1,
         top: 200,
         left: 10,
@@ -100,12 +100,11 @@
 
         textpath2() {
           var textTest = new fabric.Text(this.text, {
-            left: this.canvas.width / 4,
-            top: this.canvas.height / 4,
+            left: 100,
+            top: 100,
             fontSize: this.fontSize,
             fontFamily: this.fontFamily,
             fill: 'blue',
-            // charSpacing: 20
           });
           this.canvas.add(textTest);
         },
@@ -113,7 +112,6 @@
         setObjects() {
           this.canvas.setActiveObject(this.canvas.item(0));
           this.obj = this.canvas.getActiveObject();
-          console.log(this.obj.path)
           this.obj.setCoords();
         },
 
@@ -127,7 +125,6 @@
           }
           let textPath = this.caculatePathCurve(box, this.curvedType, this.degrees, this.fontSize);
           var path = new fabric.Path(`${textPath}`);
-          console.log(path)
           this.obj.set('path', path);
           const charSpacing = this.spacingOperation(box, this.curvedType, this.degrees, this.fontSize);
           this.obj.set('charSpacing', charSpacing);
@@ -177,17 +174,23 @@
               break;
             default:
               const up = degrees < 0 ? 0 : 1;
-              // w = w + fontSize;
               r = Math.sqrt(
                 Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
               );
               y = y + (box.h / 2) + degrees;
               d = [
-                'm ' + box.x + ', ' + y,
-                'a ' + r + ',' + r + ' 0 0,' + up + ' ' + w + ',0'
+                'm ' + x + ', ' + y,
+                'a ' + r  + ',' + r + ' 0 0,' + up + ' ' + w + ',0'
               ];
               break;
           }
+
+          const startPath = `M 20 ${w}`
+          const startPointCuver = `0 ${r}`
+          const endPointCuver = `${w} ${r}`
+          const endPathCuver = `${w} ${0}`
+          const xx = `${startPath} C ${startPointCuver}, ${endPointCuver} , ${endPathCuver}
+            `
           return d.join(' ');
         },
 
@@ -195,88 +198,25 @@
           return angle * (Math.PI / 180);
         },
 
-        radiusOperation(box, curvedType, degrees = 0, fontSize = 24) {
-          if (String(degrees) === '-') {
-            degrees = 0;
-          }
-          degrees = Number(degrees);
-          if (degrees === 0) {
-            degrees = 1;
-          }
-          let w = box.w;
-          const h = box.h;
-          let x = box.x;
-          let y = box.y;
-          let r = w;
-          switch (curvedType) {
-            case 'circle':
-              x = x + (w / 2);
-              y = y + (h / 2);
-              w = w + fontSize;
-              r = w / 2;
-              break;
-            default:
-              const up = degrees < 0 ? 0 : 1;
-              // w = w + fontSize;
-              r = Math.sqrt(
-                Math.pow(w / 2, 2) + Math.pow(Math.tan(this.toRadians(-90 - Math.abs(degrees) / 2)) * (w / 2), 2)
-              );
-              break;
-          }
-          return r;
-        },
 
         spacingOperation(box, curvedType, degrees = 0, fontSize = 24) {
-          let r = this.radiusOperation(box, curvedType, degrees, fontSize);
+          this.ctx.save()
+          const pathdata = this.obj.path;
+          let circum;
+          let char;
           if (curvedType === 'circle') {
-            var circum = Math.floor((2 * Math.PI * r));
-            this.ctx.font = fontSize + 'px ' + this.fontFamily;
-            const char = this.text.length;
-            const textWidth = this.ctx.measureText(this.text).width + char;
-            var diff = circum - textWidth;
-            this.spacing = diff / (char);
-            return ((this.spacing * 1000)) / fontSize;
+            circum = pathdata.segmentsInfo[6].length;
+            char = this.text.length;
           } else {
-            const pathdata = this.obj.path
-            const r1 = pathdata.segmentsInfo[3] ? pathdata.segmentsInfo[3].length : pathdata.segmentsInfo[2].length;
-            console.log(r1)
-            // let rect = this.obj.getBoundingRect();
-            // let w = rect.width;
-            // let h = rect.height;
-
-            // var circum = 2 * Math.PI * Math.sqrt((Math.pow(w / 2, 2) + Math.pow(h, 2)) / 2);
-            // circum = circum / 2;
-            const char = this.text.length;
-            this.ctx.font = fontSize + 'px ' + this.fontFamily;
-            // let textWidth;
-            // if(Math.abs(degrees) > 90) {
-            //   textWidth = this.ctx.measureText(this.text).width + (char);
-            // } else {
-
-            // }
-            const textWidth = this.ctx.measureText(this.text).width + (char);
-            var diff = r1 - textWidth;
-            this.spacing += diff / char;
-            // this.spacing = diff / char;
-            // console.log(this.spacing)
-            return ((Math.abs(this.spacing * 1000))) / fontSize;
-            // const ratio = Math.sqrt((Math.pow(w / 2, 2) + Math.pow(h, 2)) / 2);
-            // if (Math.abs(degrees) > 90)
-            //   return ((this.spacing * 1000) - (ratio * 100)) / fontSize
-            // else {
-            //   return (((ratio / this.spacing)) * 100) / fontSize;
-            // }
-            // console.log(this.spacing)
-            // return this.spacing
-            // return ((this.spacing * 1000)) / fontSize;
-            // const ratio = Math.tan(this.toRadians(90 - Math.abs(degrees) / 2)) * (box.w / 2);
-            // if (Math.abs(degrees) > 90)
-            //   return ((this.spacing * 1000) - (ratio * 100)) / fontSize
-            // else {
-            //   return (((ratio / this.spacing)) * 100) / fontSize;
-            // }
+            circum = pathdata.segmentsInfo[3] ? pathdata.segmentsInfo[3].length : pathdata.segmentsInfo[2].length;
+            char = this.text.length - 1;
           }
-
+          this.spacing = 1;
+          this.ctx.font = fontSize + 'px ' + this.fontFamily;
+          const textWidth = this.ctx.measureText(this.text).width + (char);
+          var diff = circum - textWidth;
+          this.spacing += diff / char;
+          return Math.abs(this.spacing) * 1000 / fontSize
         },
       }
     })

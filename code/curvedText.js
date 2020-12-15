@@ -92,43 +92,43 @@
       this.TySh.P5.warpStyle.v.warpStyle = obj.warpStyle;
     if (obj.warpValue)
       this.TySh.P5.warpValue.v = obj.warpValue;
-    this.TySh.VW.EngineDict.Rendered.Shapes = {
-      WritingDirection: 0,
-      Children: [
-        {
-          ShapeType: 0,
-          Procession: 0,
-          Lines: {
-            WritingDirection: 0,
-            Children: []
-          },
-          Cookie: {
-            Photoshop: {
-              ShapeType: 0,
-              PointBase: [
-                0,
-                0
-              ],
-              Base: {
-                ShapeType: 0,
-                TransformPoint0: [
-                  1,
-                  0
-                ],
-                TransformPoint1: [
-                  0,
-                  1
-                ],
-                TransformPoint2: [
-                  0,
-                  0
-                ]
-              }
-            }
-          }
-        }
-      ]
-    }
+    // this.TySh.VW.EngineDict.Rendered.Shapes = {
+    //   WritingDirection: 0,
+    //   Children: [
+    //     {
+    //       ShapeType: 0,
+    //       Procession: 0,
+    //       Lines: {
+    //         WritingDirection: 0,
+    //         Children: []
+    //       },
+    //       Cookie: {
+    //         Photoshop: {
+    //           ShapeType: 0,
+    //           PointBase: [
+    //             0,
+    //             0
+    //           ],
+    //           Base: {
+    //             ShapeType: 0,
+    //             TransformPoint0: [
+    //               1,
+    //               0
+    //             ],
+    //             TransformPoint1: [
+    //               0,
+    //               1
+    //             ],
+    //             TransformPoint2: [
+    //               0,
+    //               0
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     }
+    //   ]
+    // }
   };
 
   curvedText.Qm = -1;

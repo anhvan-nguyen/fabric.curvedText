@@ -70110,6 +70110,7 @@
     }
     ;
     bp.xm = function(Y, R) {
+        debugger
         var V = {
             R: [],
             P: []
@@ -70340,37 +70341,37 @@
             var B = new cd.Ws(Y,R,this.G$,x,E,o,V == 1 ? r : null);
             G.push(B)
         }
-        if (V == 2) {
-            var L = Y.Curve.Points
-              , u = r[0]
-              , y = r[1]
-              , S = r[2]
-              , X = r[3]
-              , N = r[4]
-              , k = r[5];
-            for (var x = 0; x < G.length; x++)
-                for (var d = 0; d < G[x].ZH.length; d++)
-                    if (!(x == 0 && d == 0))
-                        G[x].ZH[d].Cg = !1;
-            var B = G[0]
-              , P = B.ZH[0];
-            B.Cj.Fb(0, 0);
-            P.Cj.Fb(0, 0);
-            for (var d = P.start; d < P.end; d++) {
-                var Z = B.R3[d]
-                  , s = Z.Cj.x;
-                Z.Cj.x = 0;
-                for (var _ = Z.$S; _ <= Z.Ce; _++) {
-                    var b = B.vE[_]
-                      , q = b.V.d / 2;
-                    b.Cj.x += s;
-                    var e = cd.a6t(u, (N + b.Cj.x + q) % X);
-                    b.Cj.x = e[0] - q * e[2];
-                    b.Cj.y = e[1] - q * e[3];
-                    b.I2 = Math.atan2(e[3], e[2])
-                }
-            }
-        }
+        // if (V == 2) {
+        //     var L = Y.Curve.Points
+        //       , u = r[0]
+        //       , y = r[1]
+        //       , S = r[2]
+        //       , X = r[3]
+        //       , N = r[4]
+        //       , k = r[5];
+        //     for (var x = 0; x < G.length; x++)
+        //         for (var d = 0; d < G[x].ZH.length; d++)
+        //             if (!(x == 0 && d == 0))
+        //                 G[x].ZH[d].Cg = !1;
+        //     var B = G[0]
+        //       , P = B.ZH[0];
+        //     B.Cj.Fb(0, 0);
+        //     P.Cj.Fb(0, 0);
+        //     for (var d = P.start; d < P.end; d++) {
+        //         var Z = B.R3[d]
+        //           , s = Z.Cj.x;
+        //         Z.Cj.x = 0;
+        //         for (var _ = Z.$S; _ <= Z.Ce; _++) {
+        //             var b = B.vE[_]
+        //               , q = b.V.d / 2;
+        //             b.Cj.x += s;
+        //             var e = cd.a6t(u, (N + b.Cj.x + q) % X);
+        //             b.Cj.x = e[0] - q * e[2];
+        //             b.Cj.y = e[1] - q * e[3];
+        //             b.I2 = Math.atan2(e[3], e[2])
+        //         }
+        //     }
+        // }
     }
     cd.x9 = function(Y, R) {
         var V = Y["OS/2"]
@@ -70783,6 +70784,7 @@
         }
         $.push(G, o);
         var y = this.vE = [];
+        debugger
         for (var x = 0; x < $.length; x += 2) {
             var S = $[x]
               , X = $[x + 1]
@@ -105807,43 +105809,43 @@ curved.onChangeTySh = function(obj) {
         this.TySh.P5.warpStyle.v.warpStyle = obj.warpStyle;
     if(obj.warpValue)
         this.TySh.P5.warpValue.v = obj.warpValue;
-    this.TySh.VW.EngineDict.Rendered.Shapes = {
-        WritingDirection: 0,
-        Children: [
-          {
-            ShapeType: 0,
-            Procession: 0,
-            Lines: {
-              WritingDirection: 0,
-              Children: []
-            },
-            Cookie: {
-              Photoshop: {
-                ShapeType: 0,
-                PointBase: [
-                  0,
-                  0
-                ],
-                Base: {
-                  ShapeType: 0,
-                  TransformPoint0: [
-                    1,
-                    0
-                  ],
-                  TransformPoint1: [
-                    0,
-                    1
-                  ],
-                  TransformPoint2: [
-                    0,
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        ]
-    }
+    // this.TySh.VW.EngineDict.Rendered.Shapes = {
+    //     WritingDirection: 0,
+    //     Children: [
+    //       {
+    //         ShapeType: 0,
+    //         Procession: 0,
+    //         Lines: {
+    //           WritingDirection: 0,
+    //           Children: []
+    //         },
+    //         Cookie: {
+    //           Photoshop: {
+    //             ShapeType: 0,
+    //             PointBase: [
+    //               0,
+    //               0
+    //             ],
+    //             Base: {
+    //               ShapeType: 0,
+    //               TransformPoint0: [
+    //                 1,
+    //                 0
+    //               ],
+    //               TransformPoint1: [
+    //                 0,
+    //                 1
+    //               ],
+    //               TransformPoint2: [
+    //                 0,
+    //                 0
+    //               ]
+    //             }
+    //           }
+    //         }
+    //       }
+    //     ]
+    // }
 };
 curved.Qm = -1;
 curved.nt = -1;
